@@ -143,25 +143,3 @@ npm run dev
 
 ---
 
-## 🚢 Deployment
-
-### Deploy Backend (e.g. Render / Railway)
-A production-ready `Dockerfile` is included in `backend-springboot/`.
-
-**Environment Variables for Cloud (optional for PostgreSQL):**
-- `PORT`: `5000`
-- `SPRING_DATASOURCE_URL`: `jdbc:postgresql://<host>:5432/<dbname>`
-- `SPRING_DATASOURCE_USERNAME`: `<username>`
-- `SPRING_DATASOURCE_PASSWORD`: `<password>`
-- `SPRING_DATASOURCE_DRIVER_CLASS_NAME`: `org.postgresql.Driver`
-- `JWT_SECRET`: `<your-custom-production-jwt-secret>`
-
-### Deploy Frontend (e.g. Vercel)
-- **Root Directory**: `frontend`
-- **Environment Variable**:
-  - `VITE_BACKEND_URL`: `https://your-deployed-backend-url.com`
-
----
-
-## 📄 License
-This project is licensed under the ISC License.

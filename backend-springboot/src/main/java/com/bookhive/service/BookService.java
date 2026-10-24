@@ -26,8 +26,11 @@ public class BookService {
 
     public Book createBook(String title, String description, String category,
                            Boolean trending, Double oldPrice, Double newPrice,
-                           MultipartFile coverImageFile) throws IOException {
+                           String coverImageUrl, MultipartFile coverImageFile) throws IOException {
         String coverImage = saveFile(coverImageFile);
+        if (coverImage == null && coverImageUrl != null && !coverImageUrl.isBlank()) {
+            coverImage = coverImageUrl;
+        }
         Book book = Book.builder()
                 .title(title)
                 .description(description)

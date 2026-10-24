@@ -28,10 +28,11 @@ public class BookController {
             @RequestParam("trending") String trending,
             @RequestParam("oldPrice") Double oldPrice,
             @RequestParam("newPrice") Double newPrice,
+            @RequestParam(value = "coverImageUrl", required = false) String coverImageUrl,
             @RequestParam(value = "coverImage", required = false) MultipartFile coverImage
     ) throws IOException {
         Boolean isTrending = Boolean.parseBoolean(trending);
-        Book newBook = bookService.createBook(title, description, category, isTrending, oldPrice, newPrice, coverImage);
+        Book newBook = bookService.createBook(title, description, category, isTrending, oldPrice, newPrice, coverImageUrl, coverImage);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "message", "Book posted successfully",
                 "book", newBook

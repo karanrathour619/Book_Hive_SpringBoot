@@ -47,7 +47,9 @@ const AddBook = () => {
         formData.append("trending", data.trending ? "true" : "false");
 
         if (imageFile) {
-          formData.append("coverImage", imageFile); // ✅ actual file
+          formData.append("coverImage", imageFile);
+        } else if (data.coverImageUrl) {
+          formData.append("coverImageUrl", data.coverImageUrl);
         }
 
         try {
@@ -147,11 +149,18 @@ const AddBook = () => {
           
         />
 
-        {/* Cover Image Upload */}
+        {/* Cover Image URL or File Upload */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} className="mb-2 w-full" />
-          {imageFileName && <p className="text-sm text-gray-500">Selected: {imageFileName}</p>}
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image URL (or upload below)</label>
+          <input
+            {...register('coverImageUrl')}
+            type="text"
+            placeholder="e.g. https://images.unsplash.com/... or book-1.png"
+            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow mb-3"
+          />
+          <label className="block text-xs font-semibold text-gray-500 mb-1">Or Choose Image File from device:</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} className="mb-2 w-full text-sm" />
+          {imageFileName && <p className="text-sm text-green-600 font-medium">Selected: {imageFileName}</p>}
         </div>
 
         {/* Submit Button */}

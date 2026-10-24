@@ -60,8 +60,8 @@ const AddBook = () => {
           });
 
           reset();
-          setImageFile(null);
-          setImageFileName("");
+          setimageFile(null);
+          setimageFileName("");
         } catch (error) {
           console.error(error);
           alert("Failed to add book. Please try again.");

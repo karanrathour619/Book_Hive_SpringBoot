@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import InputField from '../addBook/InputField'
 import SelectField from '../addBook/SelectField'
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-// import { useFetchBookByIdQuery, useUpdateBookMutation } from '../../../redux/features/books/booksApi';
 import Loading from '../../../components/Loading';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import getBaseUrl from '../../../utils/baseURL';
-import { useFetchBookByIdQuery, useUpdateBookMutation } from '../../../redux/features/books/booksApiRedux';
+import { useFetchBookByIdQuery } from '../../../redux/features/books/booksApiRedux';
 
 const UpdateBook = () => {
   const { id } = useParams();
   const { data: bookData, isLoading, isError, refetch } = useFetchBookByIdQuery(id);
-  // console.log(bookData)
-  const [updateBook] = useUpdateBookMutation();
-  const { register, handleSubmit, setValue, reset } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
+  const [imageFile, setImageFile] = useState(null);
+  const [imageFileName, setImageFileName] = useState('');
+
   useEffect(() => {
     if (bookData) {
       setValue('title', bookData.title);
@@ -24,27 +24,56 @@ const UpdateBook = () => {
       setValue('trending', bookData.trending);
       setValue('oldPrice', bookData.oldPrice);
       setValue('newPrice', bookData.newPrice);
-      setValue('coverImage', bookData.coverImage)
+      setValue('coverImage', bookData.coverImage);
     }
-  }, [bookData, setValue])
+  }, [bookData, setValue]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImageFileName(file.name);
+    }
+  };
 
   const onSubmit = async (data) => {
-    const updateBookData = {
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      trending: data.trending,
-      oldPrice: Number(data.oldPrice),
-      newPrice: Number(data.newPrice),
-      coverImage: data.coverImage || bookData.coverImage,
-    };
     try {
-      await axios.put(`${getBaseUrl()}/api/books/edit/${id}`, updateBookData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      })
+      if (imageFile) {
+        // Send multipart form data with uploaded image
+        const formData = new FormData();
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('category', data.category);
+        formData.append('trending', data.trending ? "true" : "false");
+        formData.append('oldPrice', data.oldPrice);
+        formData.append('newPrice', data.newPrice);
+        formData.append('coverImage', imageFile);
+
+        await axios.put(`${getBaseUrl()}/api/books/edit/${id}`, formData, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+      } else {
+        // Send JSON data with image URL
+        const updateBookData = {
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          trending: data.trending,
+          oldPrice: Number(data.oldPrice),
+          newPrice: Number(data.newPrice),
+          coverImage: data.coverImage || bookData.coverImage,
+        };
+
+        await axios.put(`${getBaseUrl()}/api/books/edit/${id}`, updateBookData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+      }
+
       Swal.fire({
         title: "Book Updated",
         text: "Your book is updated successfully!",
@@ -54,14 +83,16 @@ const UpdateBook = () => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, It's Okay!"
       });
-      await refetch()
+      await refetch();
     } catch (error) {
-      console.log("Failed to update book.");
+      console.error("Failed to update book.", error);
       alert("Failed to update book.");
     }
-  }
+  };
+
   if (isLoading) return <Loading />
   if (isError) return <div>Error fetching book data</div>
+
   return (
     <div className="max-w-lg mx-auto md:p-6 p-3 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Update Book</h2>
@@ -95,6 +126,7 @@ const UpdateBook = () => {
           ]}
           register={register}
         />
+
         <div className="mb-4">
           <label className="inline-flex items-center">
             <input
@@ -122,13 +154,19 @@ const UpdateBook = () => {
           register={register}
         />
 
-        <InputField
-          label="Cover Image URL"
-          name="coverImage"
-          type="text"
-          placeholder="Cover Image URL"
-          register={register}
-        />
+        {/* Cover Image Selector: URL input + File picker (identical to AddBook) */}
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image URL (or upload below)</label>
+          <input
+            {...register('coverImage')}
+            type="text"
+            placeholder="e.g. https://... or book-1.png"
+            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow mb-3"
+          />
+          <label className="block text-xs font-semibold text-gray-500 mb-1">Or Choose Image File from device:</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} className="mb-2 w-full text-sm" />
+          {imageFileName && <p className="text-sm text-green-600 font-medium">Selected: {imageFileName}</p>}
+        </div>
 
         <button type="submit" className="w-full py-2 bg-blue-500 text-white font-bold rounded-md">
           Update Book
@@ -138,4 +176,4 @@ const UpdateBook = () => {
   )
 }
 
-export default UpdateBook
+export default UpdateBook;

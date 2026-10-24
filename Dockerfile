@@ -1,0 +1,20 @@
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+
+COPY backend-springboot/pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY backend-springboot/src ./src
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+RUN mkdir -p uploads
+
+COPY --from=build /app/target/bookhive-backend-1.0.0.jar app.jar
+
+ENV PORT=5000
+EXPOSE 5000
+
+ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]

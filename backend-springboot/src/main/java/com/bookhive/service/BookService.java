@@ -61,7 +61,6 @@ public class BookService {
         if (oldPrice != null) book.setOldPrice(oldPrice);
         if (newPrice != null) book.setNewPrice(newPrice);
 
-        // Fix: properly handle new uploaded image (bug in original Node.js)
         if (coverImageFile != null && !coverImageFile.isEmpty()) {
             book.setCoverImage(saveFile(coverImageFile));
         } else if (coverImageUrl != null && !coverImageUrl.isEmpty()) {

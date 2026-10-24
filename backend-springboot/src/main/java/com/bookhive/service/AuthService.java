@@ -20,11 +20,9 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public AdminLoginResponse adminLogin(AdminLoginRequest req) {
-        // Find admin user (fix: proper lookup)
         User admin = userRepository.findByUsername(req.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin not found!"));
 
-        // Fix: use BCrypt comparison instead of plain-text != check
         if (!passwordEncoder.matches(req.getPassword(), admin.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password!");
         }

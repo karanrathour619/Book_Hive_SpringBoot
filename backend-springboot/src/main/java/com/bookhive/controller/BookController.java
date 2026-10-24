@@ -20,7 +20,6 @@ public class BookController {
 
     private final BookService bookService;
 
-    // 📌 Post a book (with image upload)
     @PostMapping(value = "/create-book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> postABook(
             @RequestParam("title") String title,
@@ -39,19 +38,16 @@ public class BookController {
         ));
     }
 
-    // 📌 Get all books (matches both /api/books and /api/books/)
     @GetMapping({"", "/"})
     public ResponseEntity<List<Book>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
-    // 📌 Single book endpoint
     @GetMapping("/{id}")
     public ResponseEntity<Book> getSingleBook(@PathVariable("id") Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
-    // 📌 Update a book endpoint (supports JSON or multipart)
     @PutMapping(value = "/edit/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateBookMultipart(
             @PathVariable("id") Long id,
@@ -90,7 +86,6 @@ public class BookController {
         ));
     }
 
-    // 📌 Delete a book
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteABook(@PathVariable("id") Long id) {
         Book deletedBook = bookService.deleteBook(id);

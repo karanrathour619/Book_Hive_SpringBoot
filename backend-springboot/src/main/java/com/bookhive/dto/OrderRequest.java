@@ -4,13 +4,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * Maps the frontend's order JSON which has a nested address object:
- * {
- *   name, email, phone, totalPrice, productIds: [],
- *   address: { city, country, state, zipcode }
- * }
- */
 @Data
 public class OrderRequest {
     private String name;

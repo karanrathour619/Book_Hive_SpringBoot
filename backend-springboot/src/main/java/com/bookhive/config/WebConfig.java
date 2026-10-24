@@ -17,7 +17,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         Path uploadPath = Paths.get(uploadsDir).toAbsolutePath();
-        // Serve /uploads/** from the uploads/ directory (same as Express static middleware)
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
     }

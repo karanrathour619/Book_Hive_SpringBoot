@@ -28,7 +28,6 @@ public class Order {
     @Column(nullable = false)
     private String email;
 
-    // Address fields (flattened in DB, nested in JSON via custom serialization in DTO)
     @Column(nullable = false)
     private String city;
 

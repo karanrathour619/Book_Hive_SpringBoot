@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthlySalesDto {
-    // Serialized as "_id" to match MongoDB aggregate output: { "_id": "2025-01", ... }
     @JsonProperty("_id")
     private String monthId;
     private double totalSales;

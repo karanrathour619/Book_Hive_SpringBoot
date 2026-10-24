@@ -30,13 +30,10 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Allow H2 Console
                 .requestMatchers("/h2-console/**").permitAll()
-                // Protected: only admin JWT can call these
                 .requestMatchers(HttpMethod.POST, "/api/books/create-book").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/books/edit/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/books/**").authenticated()
-                // Everything else is public
                 .anyRequest().permitAll()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))

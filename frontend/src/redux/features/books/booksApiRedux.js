@@ -19,7 +19,7 @@ const booksApi2 = createApi({
   tagTypes: ["Books"],
   endpoints: (builder) => ({
     fetchAllBooks: builder.query({
-      query: () => "/",
+      query: () => "",
       providesTags: ["Books"],
     }),
 
